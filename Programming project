@@ -181,4 +181,5 @@ int main() {
 
     } while (choice != 7);
 
-    return
+    return 0;
+}
