@@ -1,0 +1,515 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Chicken Farm Management System</title>
+	<style>
+		body { font-family: Arial, sans-serif; background: #f8f9fa; margin: 0; padding: 0; }
+		header { background: #4caf50; color: white; padding: 1rem; text-align: center; }
+		main { max-width: 900px; margin: 2rem auto; background: white; border-radius: 8px; box-shadow: 0 2px 8px #ccc; padding: 2rem; }
+		section { margin-bottom: 2rem; }
+		h2 { color: #388e3c; }
+		.dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+		label { display: block; margin-top: 0.5rem; }
+		input, select { width: 100%; padding: 0.5rem; margin-top: 0.2rem; }
+		button { background: #388e3c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; margin-top: 1rem; cursor: pointer; }
+		button:hover { background: #2e7031; }
+		table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+		th, td { border: 1px solid #ddd; padding: 0.5rem; text-align: left; }
+		th { background: #e8f5e9; }
+	</style>
+</head>
+<body>
+	<header>
+		<h1>Davina and Rodgers Solutions</h1>
+		<p>Chicken Layers Farm Management Dashboard</p>
+	</header>
+	<main>
+		<section style="margin-bottom:2rem;">
+			<h2>Farm Summary</h2>
+			<div id="summary-stats">
+				<strong>Total Expenses:</strong> <span id="summary-expenses">0.00</span> Ksh &nbsp;|
+				<strong>Total Sales:</strong> <span id="summary-sales">0.00</span> Ksh &nbsp;|
+				<strong>Profit:</strong> <span id="summary-profit">0.00</span> Ksh &nbsp;|
+				<strong>Total Eggs:</strong> <span id="summary-eggs">0</span> &nbsp;|
+				<strong>Total Bird Deaths:</strong> <span id="summary-deaths">0</span>
+			</div>
+			<button id="clear-data-btn" style="margin-top:1rem;background:#d32f2f;">Clear All Data</button>
+			<button id="export-data-btn" style="margin-top:1rem;background:#1976d2;">Export Data (CSV)</button>
+			<label style="display:inline-block;margin-top:1rem;">
+				<input type="file" id="import-data-input" accept="application/json" style="display:none;" />
+				<button id="import-data-btn" type="button" style="background:#388e3c;">Import Data (JSON)</button>
+			</label>
+		</section>
+		<div class="dashboard-grid">
+			<section id="expenses">
+				<h2>Expenses</h2>
+				<form id="expense-form">
+					<label>Type
+						<select id="expense-type" required>
+							<option value="Feed">Feed</option>
+							<option value="Medicine">Medicine</option>
+							<option value="Utilities">Utilities</option>
+							<option value="Salaries">Salaries</option>
+							<option value="Other">Other</option>
+						</select>
+					</label>
+					<label>Amount (Ksh)
+						<input type="number" id="expense-amount" min="0" step="0.01" required />
+					</label>
+					<label>Date
+						<input type="date" id="expense-date" required />
+					</label>
+					<button type="submit">Add Expense</button>
+				</form>
+				<table id="expense-table">
+					<thead>
+						<tr>
+							<th>Type</th>
+							<th>Amount (Ksh)</th>
+							<th>Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Expenses will appear here -->
+					</tbody>
+				</table>
+			</section>
+			<section id="stock">
+				<h2>Stock Management</h2>
+				<form id="stock-form">
+					<label>Item
+						<select id="stock-item" required>
+							<option value="Feed">Feed</option>
+							<option value="Medicine">Medicine</option>
+							<option value="Eggs">Eggs</option>
+							<option value="Equipment">Equipment</option>
+						</select>
+					</label>
+					<label>Quantity
+						<input type="number" id="stock-quantity" min="0" step="1" required />
+					</label>
+					<label>Date
+						<input type="date" id="stock-date" required />
+					</label>
+					<button type="submit">Add Stock</button>
+				</form>
+				<table id="stock-table">
+					<thead>
+						<tr>
+							<th>Item</th>
+							<th>Quantity</th>
+							<th>Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Stock records will appear here -->
+					</tbody>
+				</table>
+			</section>
+			<section id="profit">
+				<h2>Profit Calculation</h2>
+				<form id="sales-form">
+					<label>Sales Amount (Ksh)
+						<input type="number" id="sales-amount" min="0" step="0.01" required />
+					</label>
+					<label>Date
+						<input type="date" id="sales-date" required />
+					</label>
+					<button type="submit">Add Sale</button>
+				</form>
+				<table id="sales-table">
+					<thead>
+						<tr>
+							<th>Amount (Ksh)</th>
+							<th>Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Sales records will appear here -->
+					</tbody>
+				</table>
+				<div style="margin-top:1rem;">
+					<strong>Total Sales:</strong> <span id="total-sales">0.00</span> Ksh<br>
+					<strong>Total Expenses:</strong> <span id="total-expenses">0.00</span> Ksh<br>
+					<strong>Profit:</strong> <span id="profit">0.00</span> Ksh
+				</div>
+			</section>
+			<section id="salaries">
+				<h2>Employee Salaries</h2>
+				<form id="salary-form">
+					<label>Employee Name
+						<input type="text" id="employee-name" required />
+					</label>
+					<label>Salary Amount (Ksh)
+						<input type="number" id="salary-amount" min="0" step="0.01" required />
+					</label>
+					<label>Date
+						<input type="date" id="salary-date" required />
+					</label>
+					<button type="submit">Add Salary</button>
+				</form>
+				<table id="salary-table">
+					<thead>
+						<tr>
+							<th>Employee</th>
+							<th>Amount (Ksh)</th>
+							<th>Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Salaries will appear here -->
+					</tbody>
+				</table>
+			</section>
+			<section id="deaths">
+				<h2>Bird Mortality</h2>
+				<form id="death-form">
+					<label>Number of Deaths
+						<input type="number" id="death-count" min="1" step="1" required />
+					</label>
+					<label>Date
+						<input type="date" id="death-date" required />
+					</label>
+					<button type="submit">Record Death</button>
+				</form>
+				<table id="death-table">
+					<thead>
+						<tr>
+							<th>Number of Deaths</th>
+							<th>Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Death records will appear here -->
+					</tbody>
+				</table>
+			</section>
+			<section id="egg-production">
+				<h2>Egg Production</h2>
+				<form id="egg-form">
+					<label>Number of Eggs Collected
+						<input type="number" id="egg-count" min="0" step="1" required />
+					</label>
+					<label>Date
+						<input type="date" id="egg-date" required />
+					</label>
+					<button type="submit">Record Collection</button>
+				</form>
+				<table id="egg-table">
+					<thead>
+						<tr>
+							<th>Eggs Collected</th>
+							<th>Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Egg records will appear here -->
+					</tbody>
+				</table>
+			</section>
+		</div>
+	</main>
+</body>
+<script>
+// --- Data Export/Import ---
+function toCSV(arr, headers) {
+	const csvRows = [headers.join(",")];
+	arr.forEach(obj => {
+		csvRows.push(headers.map(h => '"' + (obj[h] !== undefined ? obj[h] : '') + '"').join(","));
+	});
+	return csvRows.join("\n");
+}
+
+function exportData() {
+	const allData = {
+		expenses, stocks, sales, salaries, deaths, eggs
+	};
+	// Export each as CSV
+	let zipContent = '';
+	const files = [
+		{name: 'expenses.csv', data: toCSV(expenses, ['type','amount','date'])},
+		{name: 'stocks.csv', data: toCSV(stocks, ['item','quantity','date'])},
+		{name: 'sales.csv', data: toCSV(sales, ['amount','date'])},
+		{name: 'salaries.csv', data: toCSV(salaries, ['name','amount','date'])},
+		{name: 'deaths.csv', data: toCSV(deaths, ['count','date'])},
+		{name: 'eggs.csv', data: toCSV(eggs, ['count','date'])}
+	];
+	// For simplicity, export as a single JSON file
+	const blob = new Blob([JSON.stringify(allData, null, 2)], {type: 'application/json'});
+	const url = URL.createObjectURL(blob);
+	const a = document.createElement('a');
+	a.href = url;
+	a.download = 'farm_data_backup.json';
+	document.body.appendChild(a);
+	a.click();
+	document.body.removeChild(a);
+	URL.revokeObjectURL(url);
+}
+
+document.getElementById('export-data-btn').onclick = exportData;
+
+document.getElementById('import-data-btn').onclick = function() {
+	document.getElementById('import-data-input').click();
+};
+
+document.getElementById('import-data-input').addEventListener('change', function(e) {
+	const file = e.target.files[0];
+	if (!file) return;
+	const reader = new FileReader();
+	reader.onload = function(evt) {
+		try {
+			const data = JSON.parse(evt.target.result);
+			if (data.expenses && data.stocks && data.sales && data.salaries && data.deaths && data.eggs) {
+				expenses = data.expenses;
+				stocks = data.stocks;
+				sales = data.sales;
+				salaries = data.salaries;
+				deaths = data.deaths;
+				eggs = data.eggs;
+				saveData();
+				renderAll();
+				alert('Data imported successfully!');
+			} else {
+				alert('Invalid data format.');
+			}
+		} catch (err) {
+			alert('Failed to import data.');
+		}
+	};
+	reader.readAsText(file);
+});
+// --- Data Persistence ---
+function saveData() {
+	localStorage.setItem('expenses', JSON.stringify(expenses));
+	localStorage.setItem('stocks', JSON.stringify(stocks));
+	localStorage.setItem('sales', JSON.stringify(sales));
+	localStorage.setItem('salaries', JSON.stringify(salaries));
+	localStorage.setItem('deaths', JSON.stringify(deaths));
+	localStorage.setItem('eggs', JSON.stringify(eggs));
+}
+
+function loadData() {
+	expenses = JSON.parse(localStorage.getItem('expenses') || '[]');
+	stocks = JSON.parse(localStorage.getItem('stocks') || '[]');
+	sales = JSON.parse(localStorage.getItem('sales') || '[]');
+	salaries = JSON.parse(localStorage.getItem('salaries') || '[]');
+	deaths = JSON.parse(localStorage.getItem('deaths') || '[]');
+	eggs = JSON.parse(localStorage.getItem('eggs') || '[]');
+}
+
+function clearAllData() {
+	if (confirm('Are you sure you want to clear all data?')) {
+		localStorage.clear();
+		expenses = [];
+		stocks = [];
+		sales = [];
+		salaries = [];
+		deaths = [];
+		eggs = [];
+		renderAll();
+	}
+}
+
+document.getElementById('clear-data-btn').onclick = clearAllData;
+
+// Expense tracking logic
+const expenseForm = document.getElementById('expense-form');
+const expenseTableBody = document.querySelector('#expense-table tbody');
+let expenses = [];
+
+expenseForm.addEventListener('submit', function(e) {
+	e.preventDefault();
+	const type = document.getElementById('expense-type').value;
+	const amount = parseFloat(document.getElementById('expense-amount').value);
+	const date = document.getElementById('expense-date').value;
+	if (!type || !amount || !date) return;
+	expenses.push({ type, amount, date });
+	saveData();
+	renderExpenses();
+	renderProfit();
+	renderSummary();
+	expenseForm.reset();
+});
+
+function renderExpenses() {
+	expenseTableBody.innerHTML = '';
+	expenses.forEach(exp => {
+		const row = document.createElement('tr');
+		row.innerHTML = `<td>${exp.type}</td><td>${exp.amount.toFixed(2)}</td><td>${exp.date}</td>`;
+		expenseTableBody.appendChild(row);
+	});
+}
+
+// Stock management logic
+const stockForm = document.getElementById('stock-form');
+const stockTableBody = document.querySelector('#stock-table tbody');
+let stocks = [];
+
+stockForm.addEventListener('submit', function(e) {
+	e.preventDefault();
+	const item = document.getElementById('stock-item').value;
+	const quantity = parseInt(document.getElementById('stock-quantity').value);
+	const date = document.getElementById('stock-date').value;
+	if (!item || !quantity || !date) return;
+	stocks.push({ item, quantity, date });
+	saveData();
+	renderStocks();
+	renderSummary();
+	stockForm.reset();
+});
+
+function renderStocks() {
+	stockTableBody.innerHTML = '';
+	stocks.forEach(stock => {
+		const row = document.createElement('tr');
+		row.innerHTML = `<td>${stock.item}</td><td>${stock.quantity}</td><td>${stock.date}</td>`;
+		stockTableBody.appendChild(row);
+	});
+}
+
+// Sales and profit logic
+const salesForm = document.getElementById('sales-form');
+const salesTableBody = document.querySelector('#sales-table tbody');
+let sales = [];
+
+salesForm.addEventListener('submit', function(e) {
+	e.preventDefault();
+	const amount = parseFloat(document.getElementById('sales-amount').value);
+	const date = document.getElementById('sales-date').value;
+	if (!amount || !date) return;
+	sales.push({ amount, date });
+	saveData();
+	renderSales();
+	renderProfit();
+	renderSummary();
+	salesForm.reset();
+});
+
+function renderSales() {
+	salesTableBody.innerHTML = '';
+	sales.forEach(sale => {
+		const row = document.createElement('tr');
+		row.innerHTML = `<td>${sale.amount.toFixed(2)}</td><td>${sale.date}</td>`;
+		salesTableBody.appendChild(row);
+	});
+}
+
+function renderProfit() {
+	const totalSales = sales.reduce((sum, s) => sum + s.amount, 0);
+	const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+	document.getElementById('total-sales').textContent = totalSales.toFixed(2);
+	document.getElementById('total-expenses').textContent = totalExpenses.toFixed(2);
+	document.getElementById('profit').textContent = (totalSales - totalExpenses).toFixed(2);
+}
+
+// Employee salaries logic
+const salaryForm = document.getElementById('salary-form');
+const salaryTableBody = document.querySelector('#salary-table tbody');
+let salaries = [];
+
+salaryForm.addEventListener('submit', function(e) {
+	e.preventDefault();
+	const name = document.getElementById('employee-name').value;
+	const amount = parseFloat(document.getElementById('salary-amount').value);
+	const date = document.getElementById('salary-date').value;
+	if (!name || !amount || !date) return;
+	salaries.push({ name, amount, date });
+	saveData();
+	renderSalaries();
+	salaryForm.reset();
+});
+
+function renderSalaries() {
+	salaryTableBody.innerHTML = '';
+	salaries.forEach(sal => {
+		const row = document.createElement('tr');
+		row.innerHTML = `<td>${sal.name}</td><td>${sal.amount.toFixed(2)}</td><td>${sal.date}</td>`;
+		salaryTableBody.appendChild(row);
+	});
+}
+
+// Bird mortality logic
+const deathForm = document.getElementById('death-form');
+const deathTableBody = document.querySelector('#death-table tbody');
+let deaths = [];
+
+deathForm.addEventListener('submit', function(e) {
+	e.preventDefault();
+	const count = parseInt(document.getElementById('death-count').value);
+	const date = document.getElementById('death-date').value;
+	if (!count || !date) return;
+	deaths.push({ count, date });
+	saveData();
+	renderDeaths();
+	renderSummary();
+	deathForm.reset();
+});
+
+function renderDeaths() {
+	deathTableBody.innerHTML = '';
+	deaths.forEach(d => {
+		const row = document.createElement('tr');
+		row.innerHTML = `<td>${d.count}</td><td>${d.date}</td>`;
+		deathTableBody.appendChild(row);
+	});
+}
+
+// Egg production logic
+const eggForm = document.getElementById('egg-form');
+const eggTableBody = document.querySelector('#egg-table tbody');
+let eggs = [];
+
+eggForm.addEventListener('submit', function(e) {
+	e.preventDefault();
+	const count = parseInt(document.getElementById('egg-count').value);
+	const date = document.getElementById('egg-date').value;
+	if (!date) return;
+	eggs.push({ count, date });
+	saveData();
+	renderEggs();
+	renderSummary();
+	eggForm.reset();
+});
+
+function renderEggs() {
+	eggTableBody.innerHTML = '';
+	eggs.forEach(e => {
+		const row = document.createElement('tr');
+		row.innerHTML = `<td>${e.count}</td><td>${e.date}</td>`;
+		eggTableBody.appendChild(row);
+	});
+}
+
+// --- Summary Stats ---
+function renderSummary() {
+	document.getElementById('summary-expenses').textContent = expenses.reduce((sum, e) => sum + e.amount, 0).toFixed(2);
+	document.getElementById('summary-sales').textContent = sales.reduce((sum, s) => sum + s.amount, 0).toFixed(2);
+	document.getElementById('summary-profit').textContent = (sales.reduce((sum, s) => sum + s.amount, 0) - expenses.reduce((sum, e) => sum + e.amount, 0)).toFixed(2);
+	document.getElementById('summary-eggs').textContent = eggs.reduce((sum, e) => sum + (e.count || 0), 0);
+	document.getElementById('summary-deaths').textContent = deaths.reduce((sum, d) => sum + (d.count || 0), 0);
+}
+
+function renderAll() {
+	renderExpenses();
+	renderStocks();
+	renderSales();
+	renderProfit();
+	renderSalaries();
+	renderDeaths();
+	renderEggs();
+	renderSummary();
+	saveData();
+}
+
+// --- Initial Load ---
+window.onload = function() {
+	loadData();
+	renderAll();
+};
+</script>
+</script>
+</body>
+</html>
