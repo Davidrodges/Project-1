@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Chicken Farm Management System</title>
+	<title>Davina and Rodgers Solutions - Chicken Layers Farm Management System</title>
 	<style>
 		body { font-family: Arial, sans-serif; background: #f8f9fa; margin: 0; padding: 0; }
 		header { background: #4caf50; color: white; padding: 1rem; text-align: center; }
@@ -43,7 +43,7 @@
 				<button id="import-data-btn" type="button" style="background:#388e3c;">Import Data (JSON)</button>
 			</label>
 		</section>
-		<div class="dashboard-grid">
+		<div class="dashboard-grid" id="dashboard-grid">
 			<section id="expenses">
 				<h2>Expenses</h2>
 				<form id="expense-form">
@@ -109,34 +109,46 @@
 					</tbody>
 				</table>
 			</section>
-			<section id="profit">
-				<h2>Profit Calculation</h2>
-				<form id="sales-form">
-					<label>Sales Amount (Ksh)
-						<input type="number" id="sales-amount" min="0" step="0.01" required />
-					</label>
-					<label>Date
-						<input type="date" id="sales-date" required />
-					</label>
-					<button type="submit">Add Sale</button>
-				</form>
-				<table id="sales-table">
-					<thead>
-						<tr>
-							<th>Amount (Ksh)</th>
-							<th>Date</th>
-						</tr>
-					</thead>
-					<tbody>
-						<!-- Sales records will appear here -->
-					</tbody>
-				</table>
-				<div style="margin-top:1rem;">
-					<strong>Total Sales:</strong> <span id="total-sales">0.00</span> Ksh<br>
-					<strong>Total Expenses:</strong> <span id="total-expenses">0.00</span> Ksh<br>
-					<strong>Profit:</strong> <span id="profit">0.00</span> Ksh
-				</div>
-			</section>
+			   <section id="profit">
+				   <h2>Profit Calculation</h2>
+				   <div style="margin-top:1rem;">
+					   <strong>Total Sales:</strong> <span id="total-sales">0.00</span> Ksh<br>
+					   <strong>Total Expenses:</strong> <span id="total-expenses">0.00</span> Ksh<br>
+					   <strong>Profit:</strong> <span id="profit">0.00</span> Ksh<br>
+					   <strong>Weekly Profit:</strong> <span id="profit-week">0.00</span> Ksh<br>
+					   <strong>Monthly Profit:</strong> <span id="profit-month">0.00</span> Ksh
+				   </div>
+			   </section>
+			   <section id="sales">
+				   <h2>Sales</h2>
+				   <div style="margin-bottom: 0.5rem; color: #333;">
+					   <strong>Price per tray of eggs: 430 Ksh</strong>
+				   </div>
+				   <form id="sales-form">
+					   <label>Number of Trays
+						   <input type="number" id="tray-count" min="1" step="1" required />
+					   </label>
+					   <label>Date
+						   <input type="date" id="sales-date" required />
+					   </label>
+					   <div style="margin: 0.5rem 0;">
+						   <strong>Total Sale (Ksh):</strong> <span id="calculated-sale">0.00</span>
+					   </div>
+					   <button type="submit">Add Sale</button>
+				   </form>
+				   <table id="sales-table">
+					   <thead>
+						   <tr>
+							   <th>Trays</th>
+							   <th>Amount (Ksh)</th>
+							   <th>Date</th>
+						   </tr>
+					   </thead>
+					   <tbody>
+						   <!-- Sales records will appear here -->
+					   </tbody>
+				   </table>
+			   </section>
 			<section id="salaries">
 				<h2>Employee Salaries</h2>
 				<form id="salary-form">
@@ -188,10 +200,21 @@
 				</table>
 			</section>
 			<section id="egg-production">
-				<h2>Egg Production</h2>
+				<h2>Egg Production & Grading</h2>
 				<form id="egg-form">
 					<label>Number of Eggs Collected
 						<input type="number" id="egg-count" min="0" step="1" required />
+					</label>
+					<label>Grade
+						<select id="egg-grade" required>
+							<option value="Grade A">Grade A</option>
+							<option value="Grade B">Grade B</option>
+							<option value="Grade C">Grade C</option>
+							<option value="Cracked">Cracked</option>
+						</select>
+					</label>
+					<label>Storage Notes
+						<input type="text" id="egg-storage" placeholder="e.g., Clean, dry, ventilated" />
 					</label>
 					<label>Date
 						<input type="date" id="egg-date" required />
@@ -202,6 +225,8 @@
 					<thead>
 						<tr>
 							<th>Eggs Collected</th>
+							<th>Grade</th>
+							<th>Storage Notes</th>
 							<th>Date</th>
 						</tr>
 					</thead>
@@ -210,10 +235,222 @@
 					</tbody>
 				</table>
 			</section>
+			<section id="feeding-water">
+				<h2>Feeding & Water Management</h2>
+				<form id="feed-form">
+					<label>Feed Type
+						<select id="feed-type" required>
+							<option value="Starter">Starter</option>
+							<option value="Grower">Grower</option>
+							<option value="Layer">Layer</option>
+						</select>
+					</label>
+					<label>Quantity (kg)
+						<input type="number" id="feed-quantity" min="0" step="0.1" required />
+					</label>
+					<label>Schedule
+						<select id="feed-schedule" required>
+							<option value="Morning">Morning</option>
+							<option value="Midday">Midday</option>
+							<option value="Evening">Evening</option>
+						</select>
+					</label>
+					<label>Water Check
+						<select id="water-check" required>
+							<option value="Clean">Clean</option>
+							<option value="Flushed">Flushed</option>
+							<option value="Refilled">Refilled</option>
+						</select>
+					</label>
+					<label>Date
+						<input type="date" id="feed-date" required />
+					</label>
+					<button type="submit">Record Feed & Water</button>
+				</form>
+				<table id="feed-table">
+					<thead>
+						<tr>
+							<th>Feed Type</th>
+							<th>Quantity (kg)</th>
+							<th>Schedule</th>
+							<th>Water Check</th>
+							<th>Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Feed records will appear here -->
+					</tbody>
+				</table>
+			</section>
+			<section id="health">
+				<h2>Health Management</h2>
+				<form id="vaccination-form">
+					<label>Type
+						<select id="vaccination-type" required>
+							<option value="Newcastle">Newcastle</option>
+							<option value="Gumboro">Gumboro</option>
+							<option value="Fowl Pox">Fowl Pox</option>
+							<option value="Other">Other</option>
+						</select>
+					</label>
+					<label>Date
+						<input type="date" id="vaccination-date" required />
+					</label>
+					<button type="submit">Record Vaccination</button>
+				</form>
+				<form id="observation-form" style="margin-top:1rem;">
+					<label>Observation
+						<textarea id="observation-note" placeholder="e.g., Appetite good, no droppings issues" required></textarea>
+					</label>
+					<label>Date
+						<input type="date" id="observation-date" required />
+					</label>
+					<button type="submit">Record Observation</button>
+				</form>
+				<table id="vaccination-table">
+					<thead>
+						<tr>
+							<th>Type</th>
+							<th>Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Vaccination records will appear here -->
+					</tbody>
+				</table>
+				<table id="observation-table" style="margin-top:1rem;">
+					<thead>
+						<tr>
+							<th>Observation</th>
+							<th>Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Observation records will appear here -->
+					</tbody>
+				</table>
+			</section>
+			<section id="layer-cycle">
+				<h2>Layer Cycle Management</h2>
+				<form id="cycle-form">
+					<label>Flock Stage
+						<select id="flock-stage" required>
+							<option value="Pullets (0-18 weeks)">Pullets (0-18 weeks)</option>
+							<option value="Point-of-Lay (18-20 weeks)">Point-of-Lay (18-20 weeks)</option>
+							<option value="Peak Production (20-40 weeks)">Peak Production (20-40 weeks)</option>
+							<option value="Decline (after 72 weeks)">Decline (after 72 weeks)</option>
+						</select>
+					</label>
+					<label>Age (weeks)
+						<input type="number" id="flock-age" min="0" step="1" required />
+					</label>
+					<label>Recommendations
+						<textarea id="cycle-recommendations" placeholder="e.g., Increase light, layer feed" required></textarea>
+					</label>
+					<label>Date
+						<input type="date" id="cycle-date" required />
+					</label>
+					<button type="submit">Record Cycle Update</button>
+				</form>
+				<table id="cycle-table">
+					<thead>
+						<tr>
+							<th>Stage</th>
+							<th>Age (weeks)</th>
+							<th>Recommendations</th>
+							<th>Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Cycle records will appear here -->
+					</tbody>
+				</table>
+			</section>
+			<section id="staff-routine">
+				<h2>Farm Staff & Daily Routine</h2>
+				<form id="routine-form">
+					<label>Task
+						<select id="routine-task" required>
+							<option value="Feed & Water">Feed & Water</option>
+							<option value="Egg Collection">Egg Collection</option>
+							<option value="Health Check">Health Check</option>
+							<option value="Cleaning">Cleaning</option>
+							<option value="Ventilation Check">Ventilation Check</option>
+							<option value="Other">Other</option>
+						</select>
+					</label>
+					<label>Assigned To
+						<input type="text" id="routine-assigned" placeholder="Employee name" required />
+					</label>
+					<label>Status
+						<select id="routine-status" required>
+							<option value="Completed">Completed</option>
+							<option value="Pending">Pending</option>
+						</select>
+					</label>
+					<label>Date
+						<input type="date" id="routine-date" required />
+					</label>
+					<button type="submit">Record Routine</button>
+				</form>
+				<table id="routine-table">
+					<thead>
+						<tr>
+							<th>Task</th>
+							<th>Assigned To</th>
+							<th>Status</th>
+							<th>Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Routine records will appear here -->
+					</tbody>
+				</table>
+			</section>
+			<section id="financial-market">
+				<h2>Financial & Market Management</h2>
+				<form id="channel-form">
+					<label>Sales Channel
+						<select id="sales-channel" required>
+							<option value="Supermarkets">Supermarkets</option>
+							<option value="Retailers">Retailers</option>
+							<option value="Schools">Schools</option>
+							<option value="Direct Consumers">Direct Consumers</option>
+							<option value="Other">Other</option>
+						</select>
+					</label>
+					<label>Trays Sold
+						<input type="number" id="channel-trays" min="1" step="1" required />
+					</label>
+					<label>Price per Tray (Ksh)
+						<input type="number" id="channel-price" min="0" step="0.01" value="430" required />
+					</label>
+					<label>Date
+						<input type="date" id="channel-date" required />
+					</label>
+					<button type="submit">Record Channel Sale</button>
+				</form>
+				<table id="channel-table">
+					<thead>
+						<tr>
+							<th>Channel</th>
+							<th>Trays</th>
+							<th>Price per Tray</th>
+							<th>Total (Ksh)</th>
+							<th>Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Channel sales will appear here -->
+					</tbody>
+				</table>
+			</section>
 		</div>
 	</main>
 </body>
 <script>
+// Ensure DOM is loaded before running scripts
+document.addEventListener('DOMContentLoaded', function() {
 // --- Data Export/Import ---
 function toCSV(arr, headers) {
 	const csvRows = [headers.join(",")];
@@ -225,7 +462,7 @@ function toCSV(arr, headers) {
 
 function exportData() {
 	const allData = {
-		expenses, stocks, sales, salaries, deaths, eggs
+		expenses, stocks, sales, salaries, deaths, eggs, feedSchedules, vaccinations, observations, layerCycles, routines, salesChannels
 	};
 	// Export each as CSV
 	let zipContent = '';
@@ -235,7 +472,13 @@ function exportData() {
 		{name: 'sales.csv', data: toCSV(sales, ['amount','date'])},
 		{name: 'salaries.csv', data: toCSV(salaries, ['name','amount','date'])},
 		{name: 'deaths.csv', data: toCSV(deaths, ['count','date'])},
-		{name: 'eggs.csv', data: toCSV(eggs, ['count','date'])}
+		{name: 'eggs.csv', data: toCSV(eggs, ['count','grade','storage','date'])},
+		{name: 'feedSchedules.csv', data: toCSV(feedSchedules, ['type','quantity','schedule','waterCheck','date'])},
+		{name: 'vaccinations.csv', data: toCSV(vaccinations, ['type','date'])},
+		{name: 'observations.csv', data: toCSV(observations, ['note','date'])},
+		{name: 'layerCycles.csv', data: toCSV(layerCycles, ['stage','age','recommendations','date'])},
+		{name: 'routines.csv', data: toCSV(routines, ['task','assigned','status','date'])},
+		{name: 'salesChannels.csv', data: toCSV(salesChannels, ['channel','trays','price','total','date'])}
 	];
 	// For simplicity, export as a single JSON file
 	const blob = new Blob([JSON.stringify(allData, null, 2)], {type: 'application/json'});
@@ -263,12 +506,18 @@ document.getElementById('import-data-input').addEventListener('change', function
 		try {
 			const data = JSON.parse(evt.target.result);
 			if (data.expenses && data.stocks && data.sales && data.salaries && data.deaths && data.eggs) {
-				expenses = data.expenses;
-				stocks = data.stocks;
-				sales = data.sales;
-				salaries = data.salaries;
-				deaths = data.deaths;
-				eggs = data.eggs;
+				expenses = data.expenses || [];
+				stocks = data.stocks || [];
+				sales = data.sales || [];
+				salaries = data.salaries || [];
+				deaths = data.deaths || [];
+				eggs = data.eggs || [];
+				feedSchedules = data.feedSchedules || [];
+				vaccinations = data.vaccinations || [];
+				observations = data.observations || [];
+				layerCycles = data.layerCycles || [];
+				routines = data.routines || [];
+				salesChannels = data.salesChannels || [];
 				saveData();
 				renderAll();
 				alert('Data imported successfully!');
@@ -289,6 +538,12 @@ function saveData() {
 	localStorage.setItem('salaries', JSON.stringify(salaries));
 	localStorage.setItem('deaths', JSON.stringify(deaths));
 	localStorage.setItem('eggs', JSON.stringify(eggs));
+	localStorage.setItem('feedSchedules', JSON.stringify(feedSchedules));
+	localStorage.setItem('vaccinations', JSON.stringify(vaccinations));
+	localStorage.setItem('observations', JSON.stringify(observations));
+	localStorage.setItem('layerCycles', JSON.stringify(layerCycles));
+	localStorage.setItem('routines', JSON.stringify(routines));
+	localStorage.setItem('salesChannels', JSON.stringify(salesChannels));
 }
 
 function loadData() {
@@ -298,6 +553,12 @@ function loadData() {
 	salaries = JSON.parse(localStorage.getItem('salaries') || '[]');
 	deaths = JSON.parse(localStorage.getItem('deaths') || '[]');
 	eggs = JSON.parse(localStorage.getItem('eggs') || '[]');
+	feedSchedules = JSON.parse(localStorage.getItem('feedSchedules') || '[]');
+	vaccinations = JSON.parse(localStorage.getItem('vaccinations') || '[]');
+	observations = JSON.parse(localStorage.getItem('observations') || '[]');
+	layerCycles = JSON.parse(localStorage.getItem('layerCycles') || '[]');
+	routines = JSON.parse(localStorage.getItem('routines') || '[]');
+	salesChannels = JSON.parse(localStorage.getItem('salesChannels') || '[]');
 }
 
 function clearAllData() {
@@ -309,6 +570,12 @@ function clearAllData() {
 		salaries = [];
 		deaths = [];
 		eggs = [];
+		feedSchedules = [];
+		vaccinations = [];
+		observations = [];
+		layerCycles = [];
+		routines = [];
+		salesChannels = [];
 		renderAll();
 	}
 }
@@ -375,24 +642,42 @@ const salesForm = document.getElementById('sales-form');
 const salesTableBody = document.querySelector('#sales-table tbody');
 let sales = [];
 
+const TRAY_PRICE = 430;
+const trayCountInput = document.getElementById('tray-count');
+const calculatedSaleSpan = document.getElementById('calculated-sale');
+
+function updateCalculatedSale() {
+	const trays = parseInt(trayCountInput.value) || 0;
+	calculatedSaleSpan.textContent = (trays * TRAY_PRICE).toFixed(2);
+}
+trayCountInput.addEventListener('input', updateCalculatedSale);
+
 salesForm.addEventListener('submit', function(e) {
 	e.preventDefault();
-	const amount = parseFloat(document.getElementById('sales-amount').value);
+	const trays = parseInt(trayCountInput.value);
+	const amount = trays * TRAY_PRICE;
 	const date = document.getElementById('sales-date').value;
-	if (!amount || !date) return;
-	sales.push({ amount, date });
+	if (!trays || !date) return;
+	sales.push({ trays, amount, date });
 	saveData();
 	renderSales();
 	renderProfit();
 	renderSummary();
 	salesForm.reset();
+	calculatedSaleSpan.textContent = '0.00';
 });
 
 function renderSales() {
 	salesTableBody.innerHTML = '';
 	sales.forEach(sale => {
+		// For backward compatibility: if sale has no trays, estimate from amount
+		let trays = sale.trays;
+		let amount = sale.amount;
+		if (typeof trays === 'undefined' && typeof amount === 'number') {
+			trays = (amount / 430).toFixed(2);
+		}
 		const row = document.createElement('tr');
-		row.innerHTML = `<td>${sale.amount.toFixed(2)}</td><td>${sale.date}</td>`;
+		row.innerHTML = `<td>${trays || ''}</td><td>${amount.toFixed(2)}</td><td>${sale.date}</td>`;
 		salesTableBody.appendChild(row);
 	});
 }
@@ -400,9 +685,68 @@ function renderSales() {
 function renderProfit() {
 	const totalSales = sales.reduce((sum, s) => sum + s.amount, 0);
 	const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
-	document.getElementById('total-sales').textContent = totalSales.toFixed(2);
-	document.getElementById('total-expenses').textContent = totalExpenses.toFixed(2);
-	document.getElementById('profit').textContent = (totalSales - totalExpenses).toFixed(2);
+	const profit = totalSales - totalExpenses;
+	const elTotalSales = document.getElementById('total-sales');
+	const elTotalExpenses = document.getElementById('total-expenses');
+	const elProfit = document.getElementById('profit');
+	const elProfitWeek = document.getElementById('profit-week');
+	const elProfitMonth = document.getElementById('profit-month');
+
+	if (elTotalSales) {
+		elTotalSales.textContent = totalSales.toFixed(2);
+	} else {
+		console.warn('Element with id total-sales not found');
+	}
+	if (elTotalExpenses) {
+		elTotalExpenses.textContent = totalExpenses.toFixed(2);
+	} else {
+		console.warn('Element with id total-expenses not found');
+	}
+	if (elProfit) {
+		elProfit.textContent = profit.toFixed(2);
+	} else {
+		console.warn('Element with id profit not found');
+	}
+
+	// Calculate weekly and monthly profit
+	const now = new Date();
+	function parseDate(d) {
+		if (!d) return null;
+		return new Date(d);
+	}
+	const startOfWeek = new Date(now);
+	startOfWeek.setDate(now.getDate() - now.getDay() + 1);
+	startOfWeek.setHours(0,0,0,0);
+	const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+	const weekSales = sales.filter(s => {
+		const d = parseDate(s.date);
+		return d && d >= startOfWeek;
+	}).reduce((sum, s) => sum + s.amount, 0);
+	const weekExpenses = expenses.filter(e => {
+		const d = parseDate(e.date);
+		return d && d >= startOfWeek;
+	}).reduce((sum, e) => sum + e.amount, 0);
+	const monthSales = sales.filter(s => {
+		const d = parseDate(s.date);
+		return d && d >= startOfMonth;
+	}).reduce((sum, s) => sum + s.amount, 0);
+	const monthExpenses = expenses.filter(e => {
+		const d = parseDate(e.date);
+		return d && d >= startOfMonth;
+	}).reduce((sum, e) => sum + e.amount, 0);
+	const weekProfit = weekSales - weekExpenses;
+	const monthProfit = monthSales - monthExpenses;
+	if (elProfitWeek) {
+		elProfitWeek.textContent = weekProfit.toFixed(2);
+	} else {
+		console.warn('Element with id profit-week not found');
+	}
+	if (elProfitMonth) {
+		elProfitMonth.textContent = monthProfit.toFixed(2);
+	} else {
+		console.warn('Element with id profit-month not found');
+	}
 }
 
 // Employee salaries logic
@@ -465,9 +809,11 @@ let eggs = [];
 eggForm.addEventListener('submit', function(e) {
 	e.preventDefault();
 	const count = parseInt(document.getElementById('egg-count').value);
+	const grade = document.getElementById('egg-grade').value;
+	const storage = document.getElementById('egg-storage').value;
 	const date = document.getElementById('egg-date').value;
 	if (!date) return;
-	eggs.push({ count, date });
+	eggs.push({ count, grade, storage, date });
 	saveData();
 	renderEggs();
 	renderSummary();
@@ -478,8 +824,166 @@ function renderEggs() {
 	eggTableBody.innerHTML = '';
 	eggs.forEach(e => {
 		const row = document.createElement('tr');
-		row.innerHTML = `<td>${e.count}</td><td>${e.date}</td>`;
+		row.innerHTML = `<td>${e.count}</td><td>${e.grade || ''}</td><td>${e.storage || ''}</td><td>${e.date}</td>`;
 		eggTableBody.appendChild(row);
+	});
+}
+
+// Feeding & Water Management logic
+const feedForm = document.getElementById('feed-form');
+const feedTableBody = document.querySelector('#feed-table tbody');
+let feedSchedules = [];
+
+feedForm.addEventListener('submit', function(e) {
+	e.preventDefault();
+	const type = document.getElementById('feed-type').value;
+	const quantity = parseFloat(document.getElementById('feed-quantity').value);
+	const schedule = document.getElementById('feed-schedule').value;
+	const waterCheck = document.getElementById('water-check').value;
+	const date = document.getElementById('feed-date').value;
+	if (!type || !quantity || !schedule || !waterCheck || !date) return;
+	feedSchedules.push({ type, quantity, schedule, waterCheck, date });
+	saveData();
+	renderFeedSchedules();
+	feedForm.reset();
+});
+
+function renderFeedSchedules() {
+	feedTableBody.innerHTML = '';
+	feedSchedules.forEach(f => {
+		const row = document.createElement('tr');
+		row.innerHTML = `<td>${f.type}</td><td>${f.quantity}</td><td>${f.schedule}</td><td>${f.waterCheck}</td><td>${f.date}</td>`;
+		feedTableBody.appendChild(row);
+	});
+}
+
+// Health Management logic
+const vaccinationForm = document.getElementById('vaccination-form');
+const observationForm = document.getElementById('observation-form');
+const vaccinationTableBody = document.querySelector('#vaccination-table tbody');
+const observationTableBody = document.querySelector('#observation-table tbody');
+let vaccinations = [];
+let observations = [];
+
+vaccinationForm.addEventListener('submit', function(e) {
+	e.preventDefault();
+	const type = document.getElementById('vaccination-type').value;
+	const date = document.getElementById('vaccination-date').value;
+	if (!type || !date) return;
+	vaccinations.push({ type, date });
+	saveData();
+	renderVaccinations();
+	vaccinationForm.reset();
+});
+
+observationForm.addEventListener('submit', function(e) {
+	e.preventDefault();
+	const note = document.getElementById('observation-note').value;
+	const date = document.getElementById('observation-date').value;
+	if (!note || !date) return;
+	observations.push({ note, date });
+	saveData();
+	renderObservations();
+	observationForm.reset();
+});
+
+function renderVaccinations() {
+	vaccinationTableBody.innerHTML = '';
+	vaccinations.forEach(v => {
+		const row = document.createElement('tr');
+		row.innerHTML = `<td>${v.type}</td><td>${v.date}</td>`;
+		vaccinationTableBody.appendChild(row);
+	});
+}
+
+function renderObservations() {
+	observationTableBody.innerHTML = '';
+	observations.forEach(o => {
+		const row = document.createElement('tr');
+		row.innerHTML = `<td>${o.note}</td><td>${o.date}</td>`;
+		observationTableBody.appendChild(row);
+	});
+}
+
+// Layer Cycle Management logic
+const cycleForm = document.getElementById('cycle-form');
+const cycleTableBody = document.querySelector('#cycle-table tbody');
+let layerCycles = [];
+
+cycleForm.addEventListener('submit', function(e) {
+	e.preventDefault();
+	const stage = document.getElementById('flock-stage').value;
+	const age = parseInt(document.getElementById('flock-age').value);
+	const recommendations = document.getElementById('cycle-recommendations').value;
+	const date = document.getElementById('cycle-date').value;
+	if (!stage || !age || !recommendations || !date) return;
+	layerCycles.push({ stage, age, recommendations, date });
+	saveData();
+	renderLayerCycles();
+	cycleForm.reset();
+});
+
+function renderLayerCycles() {
+	cycleTableBody.innerHTML = '';
+	layerCycles.forEach(c => {
+		const row = document.createElement('tr');
+		row.innerHTML = `<td>${c.stage}</td><td>${c.age}</td><td>${c.recommendations}</td><td>${c.date}</td>`;
+		cycleTableBody.appendChild(row);
+	});
+}
+
+// Farm Staff & Daily Routine logic
+const routineForm = document.getElementById('routine-form');
+const routineTableBody = document.querySelector('#routine-table tbody');
+let routines = [];
+
+routineForm.addEventListener('submit', function(e) {
+	e.preventDefault();
+	const task = document.getElementById('routine-task').value;
+	const assigned = document.getElementById('routine-assigned').value;
+	const status = document.getElementById('routine-status').value;
+	const date = document.getElementById('routine-date').value;
+	if (!task || !assigned || !status || !date) return;
+	routines.push({ task, assigned, status, date });
+	saveData();
+	renderRoutines();
+	routineForm.reset();
+});
+
+function renderRoutines() {
+	routineTableBody.innerHTML = '';
+	routines.forEach(r => {
+		const row = document.createElement('tr');
+		row.innerHTML = `<td>${r.task}</td><td>${r.assigned}</td><td>${r.status}</td><td>${r.date}</td>`;
+		routineTableBody.appendChild(row);
+	});
+}
+
+// Financial & Market Management logic
+const channelForm = document.getElementById('channel-form');
+const channelTableBody = document.querySelector('#channel-table tbody');
+let salesChannels = [];
+
+channelForm.addEventListener('submit', function(e) {
+	e.preventDefault();
+	const channel = document.getElementById('sales-channel').value;
+	const trays = parseInt(document.getElementById('channel-trays').value);
+	const price = parseFloat(document.getElementById('channel-price').value);
+	const total = trays * price;
+	const date = document.getElementById('channel-date').value;
+	if (!channel || !trays || !price || !date) return;
+	salesChannels.push({ channel, trays, price, total, date });
+	saveData();
+	renderSalesChannels();
+	channelForm.reset();
+});
+
+function renderSalesChannels() {
+	channelTableBody.innerHTML = '';
+	salesChannels.forEach(s => {
+		const row = document.createElement('tr');
+		row.innerHTML = `<td>${s.channel}</td><td>${s.trays}</td><td>${s.price.toFixed(2)}</td><td>${s.total.toFixed(2)}</td><td>${s.date}</td>`;
+		channelTableBody.appendChild(row);
 	});
 }
 
@@ -505,11 +1009,11 @@ function renderAll() {
 }
 
 // --- Initial Load ---
-window.onload = function() {
-	loadData();
-	renderAll();
-};
-</script>
+	window.onload = function() {
+		 loadData();
+		 renderAll();
+	};
+});
 </script>
 </body>
 </html>
